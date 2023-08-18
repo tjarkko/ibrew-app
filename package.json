@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev_old": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start_old": "next start",
+    "dev": "node --require ./load-appinsights.js node_modules/next/dist/bin/next dev",
+    "start": "node --require ./load-appinsights.js node_modules/next/dist/bin/next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -14,6 +16,7 @@
     "@types/node": "20.5.0",
     "@types/react": "18.2.20",
     "@types/react-dom": "18.2.7",
+    "applicationinsights": "^2.7.3",
     "autoprefixer": "10.4.15",
     "bcrypt": "^5.1.1",
     "eslint": "8.47.0",
@@ -28,6 +31,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "dotenv": "^16.3.1",
     "eslint-config-prettier": "^9.0.0",
     "prisma": "^5.1.1"
   }
