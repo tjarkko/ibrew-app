@@ -3,8 +3,6 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Provider from '@/context/Provider'
-import { SessionProvider } from 'next-auth/react'
-import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,13 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Provider>
-        <body className={inter.className}>
-          <div className="flex flex-col">
-            <Link href="/">Home</Link>
-            <Link href="/api/auth/signout">Logout</Link>
-            {children}
-          </div>
-        </body>
+        <body className={inter.className}>{children}</body>
       </Provider>
     </html>
   )

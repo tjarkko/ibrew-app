@@ -1,27 +1,29 @@
 'use client'
 import React from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 
 const LoginPage = () => {
-  const router = useRouter()
+  const searchParams = useSearchParams()
   const [data, setData] = useState({
     password: '',
     email: '',
   })
+
+  const callbackUrl = searchParams.get('callbackUrl') ?? '/'
 
   const signInUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     signIn('credentials', {
       ...data,
-      redirect: false,
+      redirect: true,
+      callbackUrl,
     })
       .then((res) => {
         console.log('signed in ok')
         console.log(res)
-        router.push('/dashboard')
       })
       .catch((err) => {
         console.log('signed in error')
