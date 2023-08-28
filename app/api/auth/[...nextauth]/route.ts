@@ -14,25 +14,27 @@ const authOptions: AuthOptions = {
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        username: { label: 'Username', type: 'text', placeholder: "jsmith" },
+        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
         password: { label: 'Password', type: 'password' },
         email: { label: 'Email', type: 'email' },
       },
       async authorize(credentials) {
-        console.log("in authorize")
-        console.log({credentials})
-        if(!credentials?.email || !credentials?.password){
+        console.log('in authorize')
+        console.log({ credentials })
+        if (!credentials?.email || !credentials?.password) {
           return null
         }
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         })
-        if(!user){
+        if (!user) {
           return null
         }
-        console.log({user})
-        const isValid = user.passwordHash && await bcrypt.compare(credentials.password, user.passwordHash)
-        if(!isValid){
+        console.log({ user })
+        const isValid =
+          user.passwordHash &&
+          (await bcrypt.compare(credentials.password, user.passwordHash))
+        if (!isValid) {
           console.log('Invalid password')
           return null
         }
@@ -41,14 +43,13 @@ const authOptions: AuthOptions = {
     }),
   ],
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
   secret: process.env.NEXT_AUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
+  pages: { signIn: '/login' },
 }
 
-
-const handler =  NextAuth(authOptions)
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }
-
