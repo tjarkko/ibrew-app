@@ -31,7 +31,7 @@ jobs:
 
       - name: Zip all files for upload between jobs
         working-directory: ./build/standalone
-        run: zip next.zip . -qr
+        run: zip ../../next.zip . -qr
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
