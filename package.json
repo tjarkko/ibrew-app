@@ -7,7 +7,8 @@
     "build": "next build && cp -r ./node_modules/dotenv ./build/standalone/node_modules/dotenv && cp ./load-appinsights.js ./build/standalone/",
     "start_old": "next start",
     "dev": "node --require ./load-appinsights.js node_modules/next/dist/bin/next dev",
-    "start": "node --require ./load-appinsights.js server.js",
+    "start_ai": "node --require ./load-appinsights.js server.js",
+    "start": "node server.js",
     "lint": "next lint"
   },
   "dependencies": {
