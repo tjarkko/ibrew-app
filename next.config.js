@@ -2,6 +2,7 @@
 const nextConfig = {
   output: 'standalone',
   //trailingSlash: true
+  distDir: 'build',
 }
 
 module.exports = nextConfig
