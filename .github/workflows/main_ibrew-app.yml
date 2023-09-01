@@ -27,7 +27,7 @@ jobs:
           npm run build
           mv ./build/static ./build/standalone/build
           mv ./public ./build/standalone
-          cp ./load-appinsight.js ./build/standalone
+          cp ./load-appinsights.js ./build/standalone
 
       - name: Zip all files for upload between jobs
         # IMPORTANT: .next is a hidden folder and will NOT be included in the zip unless we specify it
