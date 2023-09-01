@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  //output: 'standalone',
+  output: 'standalone',
   //trailingSlash: true
-  //distDir: 'build',
+  distDir: 'build',
 }
 
 module.exports = nextConfig
