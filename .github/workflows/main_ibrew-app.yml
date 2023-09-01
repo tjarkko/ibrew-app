@@ -59,7 +59,7 @@ jobs:
           app-name: "ibrew-app"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_273FC782A931425EA60070CBA896F0C4 }}
-          package: ./build/standalone
+          package: next.zip
 
       - name: Delete zip file
         run: rm next.zip
