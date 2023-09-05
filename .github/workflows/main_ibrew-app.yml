@@ -28,6 +28,9 @@ jobs:
           mv ./build/static ./build/standalone/build
           mv ./public ./build/standalone
           cp ./load-appinsights.js ./build/standalone
+        env:
+          NEXTAUTH_SECRET: ${{ vars.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
 
       - name: Zip all files for upload between jobs
         working-directory: ./build/standalone
