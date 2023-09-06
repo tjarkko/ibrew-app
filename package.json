@@ -4,12 +4,11 @@
   "private": true,
   "scripts": {
     "dev_old": "next dev",
-    "build_deps": "next build && cp -r ./node_modules/dotenv ./build/standalone/node_modules/dotenv && cp ./load-appinsights.js ./build/standalone/",
-    "build": "next build",
-    "start": "next start",
+    "build": "next build && cp -r ./node_modules/dotenv ./build/standalone/node_modules/dotenv && cp ./load-appinsights.js ./build/standalone/",
+    "start_old": "next start",
     "dev": "node --require ./load-appinsights.js node_modules/next/dist/bin/next dev",
     "start_ai": "node --require ./load-appinsights.js server.js",
-    "start_env": "printenv > .env.local && node server.js",
+    "start": "printenv > .env.local && node server.js",
     "lint": "next lint"
   },
   "dependencies": {

@@ -27,14 +27,16 @@ jobs:
         run: |
           npm install
           npm run build
-
+          mv ./build/static ./build/standalone/build
+          mv ./public ./build/standalone
+          cp ./load-appinsights.js ./build/standalone
         env:
           NEXTAUTH_SECRET: ${{ vars.NEXTAUTH_SECRET }}
           NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
 
       - name: Zip all files for upload between jobs
-        working-directory: ./build/
-        run: zip ../next.zip . -qr
+        working-directory: ./build/standalone
+        run: zip ../../next.zip . -qr
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
