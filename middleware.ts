@@ -7,6 +7,9 @@ export default withAuth(
   function middleware(req) {
     console.log('this is from middleware')
     console.log(req.nextauth.token)
+    console.log(`origin: ${req.nextUrl.origin}`)
+    console.log(JSON.stringify(req))
+    console.log(req)
   },
   {
     pages: { signIn: '/login' },
