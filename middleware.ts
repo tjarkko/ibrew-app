@@ -7,36 +7,11 @@ import type { NextFetchEvent, NextRequest } from 'next/server'
 
 const authMiddleware = withAuth({ pages: { signIn: '/login' } })
 
-//export declare const INTERNALS: unique symbol
-
-/*declare class NextRequestNew
-  extends NextRequest
-  implements NextRequestWithAuth
-{
-  constructor(input, init = {}) {
-    this[INTERNALS] = {
-      cookies: new _cookies.RequestCookies(this.headers),
-      geo: init.geo || {},
-      ip: init.ip,
-      nextUrl,
-      url: process.env.__NEXT_NO_MIDDLEWARE_URL_NORMALIZE
-        ? url
-        : nextUrl.toString(),
-    }
-  }
-}*/
-
 export function middleware(
   request: NextRequestWithAuth,
   _next: NextFetchEvent
 ) {
-  console.log(`middleware, path: ${request.nextUrl.pathname}`)
-  //console.log('request:')
-  //console.log(request)
-  //request[INTERNALS].nextUrl.origin = 'heppa'
-
   const nextUrl: NextURL & any = {
-    //[Internal]: {},
     analyze: () => {
       return
     },
@@ -117,10 +92,10 @@ export function middleware(
     },
 
     get origin(): string {
-      const url = request.nextUrl.protocol + '//' + request.headers.get('host')
+      //const url = request.nextUrl.protocol + '//' + request.headers.get('host')
       //+ request.nextUrl.port
       //+ request.nextUrl.pathname
-      console.log('url: ' + url)
+      const url = process.env.NEXTAUTH_URL
       return url || request.nextUrl.origin
     },
 
@@ -205,11 +180,6 @@ export function middleware(
       return this[INTERNALS].ip
     },
     get nextUrl() {
-      /*const nextUrl: NextURL = {
-        ...this[INTERNALS].nextUrl,
-        origin: request.headers.get('host') || this[INTERNALS].nextUrl.origin,
-      }*/
-
       return nextUrl
     },
     get page() {
@@ -222,29 +192,9 @@ export function middleware(
       return this[INTERNALS].url
     },
   }
-  //console.log('req:')
-  //console.log(req)
 
-  /*if (request.nextUrl.pathname.startsWith('/dashboard')) {
-    console.log('redirect to login')
-    return NextResponse.redirect(new URL('/login', request.url))
-  }*/
   return authMiddleware(req, _next)
 }
-
-/*export default withAuth(
-  // `withAuth` augments your `Request` with the user's token.
-  function middleware(req) {
-    console.log('this is from middleware')
-    console.log(req.nextauth.token)
-    console.log(`origin: ${req.nextUrl.origin}`)
-    console.log(JSON.stringify(req))
-    console.log(req)
-  },
-  {
-    pages: { signIn: '/login' },
-  }
-)*/
 
 export const config = {
   matcher: ['/((?!login).*)'],
