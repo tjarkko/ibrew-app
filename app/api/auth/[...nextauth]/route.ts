@@ -1,13 +1,15 @@
-import NextAuth, { AuthOptions, SessionStrategy } from 'next-auth'
+import NextAuth, { AuthOptions, Session, SessionStrategy } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import AzureADProvider from 'next-auth/providers/azure-ad'
 import bcrypt from 'bcrypt'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { PrismaClient } from '@prisma/client'
+import * as jose from 'jose'
+import { JWT } from 'next-auth/jwt'
 
 const prisma = new PrismaClient()
 
-const authOptions: AuthOptions = {
+export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   // Configure one or more authentication providers
   providers: [
@@ -42,6 +44,55 @@ const authOptions: AuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    session: async ({
+      session,
+      token,
+    }: {
+      session: Session
+      token: JWT
+    }): Promise<Session> => {
+      //session.user.provider = token.provider
+      //session.user.id = token.id
+
+      console.log(`token: ${JSON.stringify(token)}`, token)
+      const mySecret = Uint8Array.from(
+        Buffer.from(process.env.MY_SECRET ?? '', 'base64')
+      )
+
+      const jwt = await new jose.SignJWT(token)
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('2 hours')
+        .sign(mySecret)
+
+      //const jwe = await new jose.EncryptJWT(jwt)
+      const jwe = await new jose.CompactEncrypt(new TextEncoder().encode(jwt))
+        .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
+        //.setExpirationTime('30d')
+        //.setIssuedAt()
+        //.setSubject('my-subject')
+        //.setIssuer('https://example.com')
+        //.setAudience('https://example.com/test')
+        //.setExpirationTime('1d')
+        .encrypt(mySecret)
+      session.myJwt = jwe
+
+      console.log(`jwe: ${JSON.stringify(jwe)}`)
+
+      //const decryptedJwt = await jose.jwtDecrypt(jwe, mySecret)
+      //console.log(`decryptedJwt: ${JSON.stringify(decryptedJwt)}`)
+      const { plaintext, protectedHeader } = await jose.compactDecrypt(
+        jwe,
+        mySecret
+      )
+
+      console.log(protectedHeader)
+      console.log(new TextDecoder().decode(plaintext))
+
+      return session
+    },
+  },
   session: {
     strategy: 'jwt',
   },

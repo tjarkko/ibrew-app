@@ -4,8 +4,39 @@ import { NextURL } from 'next/dist/server/web/next-url'
 import { INTERNALS } from 'next/dist/server/web/spec-extension/request'
 import { NextResponse } from 'next/server'
 import type { NextFetchEvent, NextRequest } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { getToken } from 'next-auth/jwt'
+import { authOptions } from './app/api/auth/[...nextauth]/route'
 
-const authMiddleware = withAuth({ pages: { signIn: '/login' } })
+const authMiddleware = withAuth(
+  async function middleware(req) {
+    console.log(
+      `middleware: next auth token: ${JSON.stringify(req.nextauth.token)}`
+    )
+    /*//const session = await getServerSession(authOptions)
+    const response = NextResponse.next()
+    //response.headers.set('Authorization', `Bearer ${session?.myJwt ?? ''}`)
+    response.headers.set('Authorization', `Bearer heppa`)
+    return response*/
+    // Clone the request headers and set a new header `x-hello-from-middleware1`
+    const requestHeaders = new Headers(req.headers)
+    requestHeaders.set('x-hello-from-middleware1', 'hello')
+    console.log(`middleware, path: ${req.nextUrl.pathname}`)
+
+    // You can also set request headers in NextResponse.rewrite
+    const response = NextResponse.next({
+      request: {
+        // New request headers
+        headers: requestHeaders,
+      },
+    })
+
+    // Set a new response header `x-hello-from-middleware2`
+    response.headers.set('x-hello-from-middleware2', 'hello')
+    return response
+  },
+  { pages: { signIn: '/login' } }
+)
 
 export function middleware(
   request: NextRequestWithAuth,
@@ -193,9 +224,12 @@ export function middleware(
     },
   }
 
+  //console.log(`middleware, path: ${request.nextUrl.pathname}`)
+
   return authMiddleware(req, _next)
 }
 
 export const config = {
-  matcher: ['/((?!login).*)'],
+  //matcher: ['/((?!login).*)'],
+  matcher: ['/((?!api|login).*)'],
 }
